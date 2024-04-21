@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/tachyons/4.11.1/tachyons.min.css"></link>
+	<title>SL 5x5</title>
+</head>
+<body>
+	<div class="helvetica pa3">
+		<div class="form">
+		  <fieldset>
+			<legend>SL 5x5:</legend>
+			<input
+				type="number"
+				id="weight"
+				class="pa2 input-reset"
+				placeholder="weight"
+		  	/>
+			<div>
+			  <input type="radio" id="squat" name="lift" value="squat" checked />
+			  <label for="squat">Squat</label>
+			</div>
+			<div>
+			  <input type="radio" id="bench" name="lift" value="bench" />
+			  <label for="bench">Bench</label>
+			</div>
+			<div>
+			  <input type="radio" id="deadlift" name="lift" value="deadlift" />
+			  <label for="deadlift">Deadlift</label>
+			</div>
+			<div>
+			  <input type="radio" id="press" name="lift" value="press" />
+			  <label for="press">Overhead</label>
+			</div>
+			<div>
+				<input type="radio" id="row" name="lift" value="row" />
+				<label for="row">Row</label>
+			  </div>
+
+			<button id="submit" class="f6 link dim br3 ph3 pv2 mb2 dib white bg-dark-blue">Calculate</button>
+		  </fieldset>
+
+		  <h2 id="lift-title"></h2>
+
+		  <table class="f6 w-100 mw8" cellspacing="0" id="lifts-table">
+			<thead>
+			  <tr>
+				<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Set</th>
+				<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Reps</th>
+				<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Weight</th>
+			  </tr>
+			</thead>
+			<tbody id="lifts">
+			  <tr>
+				<td class="pv3 pr3 bb b--black-20">1</td>
+				<td class="pv3 pr3 bb b--black-20">5</td>
+				<td class="pv3 pr3 bb b--black-20">45</td>
+			  </tr>
+			  </tbody>
+			  </table>
+		</div>
+	  </div>
+	
+	<script type="module">
+		import SL from './index.mjs'
+		const submit = () => {
+			const weight = document.getElementById('weight').value
+			const lift = document.querySelector('input[name="lift"]:checked').value
+			const workout = new SL(weight, lift).workout()
+			const table = document.getElementById('lifts-table')
+			table.querySelector('#lifts').innerHTML = ''
+
+			const fragment = document.createDocumentFragment()
+			workout.sets.forEach(l => {
+				const tr = document.createElement('tr')
+				const td1 = document.createElement('td')
+				td1.classList.add('pv3', 'pr3', 'bb', 'b--black-20')
+				const td2 = document.createElement('td')
+				td2.classList.add('pv3', 'pr3', 'bb', 'b--black-20')
+				const td3 = document.createElement('td')
+				td3.classList.add('pv3', 'pr3', 'bb', 'b--black-20')
+				td1.textContent = l.name
+				td2.textContent = l.reps
+				td3.textContent = l.weight
+				tr.appendChild(td1)
+				tr.appendChild(td2)
+				tr.appendChild(td3)
+				fragment.appendChild(tr)
+			});
+
+			document.getElementById('lift-title').textContent = workout.lift
+			table.querySelector('#lifts').appendChild(fragment)
+
+		}
+
+		document.getElementById('submit').addEventListener('click', submit)
+	</script>
+	
+</body>
+</html>
